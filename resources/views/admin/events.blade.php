@@ -81,7 +81,7 @@
                     events.forEach(event => {
                         let li = document.createElement('li');
                         li.innerHTML = `${event.title} - ${event.start_time} 
-                            (Speaker: ${event.speaker.name}) 
+                            (Speaker: ${event.speaker.name}) - (Total attendees: ${event.total_attendees}) - (Total Revenue: ${event.total_revenue})
                             <button onclick="deleteEvent(${event.id})">Delete</button>`;
                         list.appendChild(li);
                     });
