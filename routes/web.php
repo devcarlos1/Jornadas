@@ -1,5 +1,7 @@
 <?php
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SpeakerController;
+use App\Http\Controllers\EventController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,3 +25,5 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/admin/speakers', [SpeakerController::class, 'viewSpeaker'])->name('admin.speakers');
+Route::get('/admin/event', [EventController::class, 'viewEvent'])->name('admin.event');
