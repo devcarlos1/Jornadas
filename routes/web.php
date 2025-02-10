@@ -2,7 +2,10 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SpeakerController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\RegistrationController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PayPalController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,3 +30,9 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/admin/speakers', [SpeakerController::class, 'viewSpeaker'])->name('admin.speakers');
 Route::get('/admin/event', [EventController::class, 'viewEvent'])->name('admin.event');
+
+Route::get('/users/dashboard', [RegistrationController::class, 'viewDash'])->name('users.dashboard');
+
+Route::post('/paypal/pay', [PayPalController::class, 'createPayment'])->name('paypal.pay');
+Route::get('/paypal/success', [PayPalController::class, 'successPayment'])->name('paypal.success');
+Route::get('/paypal/cancel', [PayPalController::class, 'cancelPayment'])->name('paypal.cancel');

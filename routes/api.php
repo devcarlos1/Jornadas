@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SpeakerController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\RegistrationController;
 
 
 /*
@@ -33,3 +34,5 @@ Route::get('/speakers/spakersList', [SpeakerController::class, 'spakersList']);
 Route::post('/events/store', [EventController::class, 'store']);
 Route::post('/events/destroy/{id}', [EventController::class, 'destroy']);
 Route::get('/events/eventsList', [EventController::class, 'eventList']);
+
+

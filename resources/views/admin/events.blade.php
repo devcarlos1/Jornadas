@@ -19,6 +19,7 @@
         </select>
         <select id="speakersList" required></select>
         <input type="number" id="max">
+        <input type="number" id="amount">
         <input type="datetime-local" id="start_time" required>
         <input type="datetime-local" id="end_time" required readonly>
         <button type="submit">Add Event</button>
@@ -81,7 +82,7 @@
                     events.forEach(event => {
                         let li = document.createElement('li');
                         li.innerHTML = `${event.title} - ${event.start_time} 
-                            (Speaker: ${event.speaker.name}) - (Total attendees: ${event.total_attendees}) - (Total Revenue: ${event.total_revenue})
+                            (Speaker: ${event.speaker.name}) - (Amount: ${event.amount}) - (Total attendees: ${event.total_attendees}) - (Total Revenue: ${event.total_revenue})
                             <button onclick="deleteEvent(${event.id})">Delete</button>`;
                         list.appendChild(li);
                     });
@@ -110,10 +111,10 @@
             let start_time = getFormattedDate(document.getElementById('start_time').value);
             let end_time = getFormattedDate(document.getElementById('end_time').value);
             let speaker_id = document.getElementById('speakersList').options[document.getElementById("speakersList").selectedIndex].id;
+            let amount = document.getElementById('amount').value;
             let max_attendees = document.getElementById('max').value;
-            console.log(speaker_id)
             axios.post('/api/events/store', {
-                title, type, speaker_id, start_time, end_time, max_attendees
+                title, type, speaker_id, start_time, end_time,amount, max_attendees
             })
             .then(() => {
                 alert('Event added successfully');

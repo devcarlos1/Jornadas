@@ -25,6 +25,7 @@ class EventController extends Controller
             'speaker_id' => 'required|exists:speakers,id',
             'start_time' => 'required|date_format:Y-m-d H:i:s',
             'end_time' => 'required|date_format:Y-m-d H:i:s|after:start_time',
+            'amount' => 'required',
             'max_attendees' => 'required|int',
         ]);
 
