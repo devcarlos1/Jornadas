@@ -22,7 +22,7 @@ use App\Http\Controllers\RegistrationController;
 
 
 // Autenticación
-Route::post('register', [AuthController::class, 'register']);
+Route::post('register/create', [AuthController::class, 'register'])->name('register.create');
 Route::get('/verify-email/{token}', [AuthController::class, 'verifyEmail']);
 Route::post('login', [AuthController::class, 'login']);
 Route::post('me', [AuthController::class, 'me']);

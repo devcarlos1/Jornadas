@@ -79,7 +79,7 @@ class PayPalController extends Controller
             $event->increment('total_revenue', $response['purchase_units'][0]['payments']['captures'][0]['amount']['value']);
             Mail::to($user->email)->send(new PaymentReceipt($event, $user, $ticketNumber));
 
-            return redirect()->route('users.dashboard')->with('success', 'Pago realizado con éxito y registro completado.');
+            return redirect()->route('users.eventUser')->with('success', 'Pago realizado con éxito y registro completado.');
         }
 
         return redirect()->route('users.dashboard')->with('error', 'Error al procesar el pago.');

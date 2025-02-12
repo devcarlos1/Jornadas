@@ -21,7 +21,7 @@ use App\Http\Controllers\UserController;
 Route::get('/', function () {
     return view('auth.register'); // Cambia según la ubicación del archivo
 });
-Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 

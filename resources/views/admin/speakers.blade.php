@@ -16,15 +16,19 @@
         <li>
             <a href="{{ url('/admin/event') }}" class="text-white hover:text-gray-400">Events</a>
         </li>
+        <li>
+            <form action="{{ 'logout' }}" method="POST" class="inline">
+                @csrf
+                <button type="submit" class="text-white hover:text-gray-400">Logout</button>
+            </form>
+        </li>
     </ul>
 </nav>
 
-<h1 class="text-4xl font-bold text-center my-8 text-blue-600">Speakers List</h1>
-
 <!-- Formulario para agregar un nuevo speaker -->
- <div class="w-[50%] my-0 mx-auto">
+ <div class="w-[50%] my-0 mx-auto mt-6">
  <h2 class="text-2xl font-semibold mb-4 text-gray-700">Add New Speaker</h2>
-<form action="POST" id="speakerForm" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+<form action="POST" id="speakerForm" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 ">
     <div class="mb-4">
         <input type="text" id="name" placeholder="Name" required 
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
@@ -43,8 +47,7 @@
 </form>
  </div>
 
-
-<h2 class="text-2xl font-semibold mt-8 mb-4 text-gray-700">Speakers</h2>
+ <h1 class="text-4xl font-bold text-center my-8 text-blue-600">Speakers List</h1>
 <ul id="speakersList" class=" pl-5 text-gray-600 space-y-4"></ul>
 
 
@@ -108,6 +111,9 @@
                 })
                 .catch(error => console.error(error));
         }
+
+
+        
     </script>
 </body>
 </html>

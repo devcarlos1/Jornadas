@@ -18,7 +18,7 @@
             <a href="/users/eventUser" class="text-white hover:text-gray-400">My Events</a>
         </li>
         <li>
-            <form action="{{ 'logout' }}" method="POST" class="inline">
+            <form action="{{ 'logout' }}"method="POST" class="inline">
                 @csrf
                 <button type="submit" class="text-white hover:text-gray-400">Logout</button>
             </form>

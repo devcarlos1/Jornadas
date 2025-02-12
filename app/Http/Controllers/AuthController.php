@@ -16,6 +16,11 @@ use App\Mail\VerificationTokenMail;
 class AuthController extends Controller
 {
 
+    // Mostrar formulario de registro
+    public function showRegister()
+    {
+        return view('auth.register');
+    }
     public function register(Request $request)
     {
         // Validar los datos del formulario
@@ -51,10 +56,8 @@ class AuthController extends Controller
         // Enviar email con el token de verificación
         Mail::to($user->email)->send(new VerificationTokenMail($verificationToken));
 
-        return response()->json([
-            'message' => 'Registro exitoso. Se ha enviado un correo con tu token de verificación.',
-            'verification_token' => $verificationToken,
-        ], 201);
+        return redirect('/login');
+
     }
     // Verificación del token recibido por correo
     public function verifyEmail($token)

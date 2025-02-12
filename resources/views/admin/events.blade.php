@@ -16,6 +16,12 @@
         <li>
             <a href="{{ url('/admin/event') }}" class="text-white hover:text-gray-400">Events</a>
         </li>
+        <li>
+            <form action="{{ 'logout' }}" method="POST" class="inline">
+                @csrf
+                <button type="submit" class="text-white hover:text-gray-400">Logout</button>
+            </form>
+        </li>
     </ul>
 </nav>
 <h1 class="text-4xl font-bold text-center my-8 text-blue-600">Events Management</h1>
@@ -157,6 +163,7 @@
             <p class="text-gray-600">Amount: $${event.amount}</p>
             <p class="text-gray-600">Total Attendees: ${event.total_attendees}</p>
             <p class="text-gray-600">Total Revenue: $${event.total_revenue}</p>
+            <p class="text-gray-600">Max Attendees: ${event.max_attendees}</p>
         </div>
         <button 
             onclick="deleteEvent(${event.id})" 
@@ -219,6 +226,42 @@
                 })
                 .catch(error => console.error(error));
         }
+
+        const startTime = document.getElementById('start_time');
+        const endTime = document.getElementById('end_time');
+
+// Función para verificar si la fecha es jueves o viernes
+function isThursdayOrFriday(date) {
+    const day = date.getDay();
+    // 4 = Jueves, 5 = Viernes
+    return day === 4 || day === 5;
+}
+
+// Evento al seleccionar una fecha
+startTime.addEventListener('change', (event) => {
+    const selectedDate = new Date(event.target.value);
+
+    // Si no es jueves o viernes, se limpia el campo
+    if (!isThursdayOrFriday(selectedDate)) {
+        alert('Solo se permiten fechas en jueves y viernes.');
+        startTime.value = '';
+        endTime.value = '';
+    }
+});
+
+// Deshabilitar días no permitidos al abrir el calendario
+startTime.addEventListener('click', () => {
+    const today = new Date();
+    let nextAvailableDate = new Date(today);
+
+    // Encuentra el siguiente jueves o viernes
+    while (!isThursdayOrFriday(nextAvailableDate)) {
+        nextAvailableDate.setDate(nextAvailableDate.getDate() + 1);
+    }
+
+    // Define el atributo min para limitar el inicio
+    startTime.min = nextAvailableDate.toISOString().split('T')[0];
+});
     </script>
 </body>
 </html>

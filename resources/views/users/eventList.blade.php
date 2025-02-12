@@ -17,7 +17,7 @@
             <a href="/users/eventUser" class="text-white hover:text-gray-400">My Events</a>
         </li>
         <li>
-            <form action="/logout" method="POST" class="inline">
+            <form action="{{ 'logout' }}" method="POST" class="inline">
                 @csrf
                 <button type="submit" class="text-white hover:text-gray-400">Logout</button>
             </form>
@@ -36,17 +36,20 @@
 
 function changeType(selectElement) {
     // Encuentra el formulario más cercano al select
-    let formPay = selectElement.nextElementSibling;
+    let formPay = selectElement.parentNode.nextElementSibling;
     // Encuentra el input dentro de ese mismo formulario
     let input = formPay.querySelector("input[id='typeValue']");
     let inputAmount = formPay.querySelector("input[id='amount']");
 
-    let formFree = selectElement.nextElementSibling.nextElementSibling;
+    let formFree = selectElement.parentNode.nextElementSibling.nextElementSibling;
     // Obtiene el valor directamente desde el select pasado como referencia
     let valorSeleccionado = selectElement.value;
     // Actualiza el input con el valor seleccionado
-
-    const amount= selectElement.previousSibling.previousSibling.title
+    console.log(input);
+    console.log(inputAmount);
+    console.log(formFree);
+    console.log(valorSeleccionado);
+    const amount= selectElement.previousSibling.previousSibling.title;
     switch (valorSeleccionado) {
         case 'Presencial': 
             input.value = valorSeleccionado;
@@ -151,14 +154,14 @@ function loadEvents() {
         <p class="text-sm text-gray-600">${event.start_time}</p>
         <p class="text-sm text-gray-600">Speaker: <span class="font-medium">${event.speaker.name}</span></p>
         <p class="text-sm text-gray-600">
-            <span title="${event.amount}" class="font-semibold">${event.amount}</span> - ${type} - 
+            <span title="${event.amount}" class="font-semibold">${event.amount}$</span> ${type} 
             <span class="text-green-600 font-bold">Disponible</span>
         </p>
 
         <form action="{{ route('paypal.pay') }}" method="POST" class="mt-2" onsubmit="setAmount(${event.amount})">
             @csrf
             <input type="hidden" name="eventid" value="${event.id}"> 
-            <input type="hidden" name="type" id='typeValue'> 
+            <input type="hidden" name="type" id='typeValue' value="Presencial"> 
             <input type="hidden" name="amount" id="amount" value="${event.amount}"> 
             <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700 transition duration-300">
                 Pagar
