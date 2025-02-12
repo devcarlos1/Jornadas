@@ -11,6 +11,7 @@ class EventController extends Controller
     {
         return response()->json(Event::with('speaker')->paginate(10));
     }
+    
     public function viewEvent()
     {
         return view('admin.events');

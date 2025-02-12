@@ -25,6 +25,18 @@ use App\Http\Controllers\RegistrationController;
 Route::post('register', [AuthController::class, 'register']);
 Route::get('/verify-email/{token}', [AuthController::class, 'verifyEmail']);
 Route::post('login', [AuthController::class, 'login']);
+Route::post('me', [AuthController::class, 'me']);
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return response()->json($request->user());
+});
+
+Route::post('/refresh', [AuthController::class, 'refreshToken']);
+
+Route::post('/free/registration', [RegistrationController::class, 'free']);
+Route::get('/user/registration', [RegistrationController::class, 'getUserEvents']);
+
+
 
 // Rutas protegidas con autenticación
 Route::post('/speakers/store', [SpeakerController::class, 'store']);

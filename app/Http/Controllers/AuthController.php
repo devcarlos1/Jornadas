@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerificationTokenMail;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 
 class AuthController extends Controller
@@ -89,29 +90,40 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
-
-        if (!$token = JWTAuth::attempt($credentials)) {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+    
+        if (!Auth::attempt($credentials)) {
             return response()->json(['message' => 'Credenciales incorrectas'], 401);
         }
-        $user = JWTAuth::user();
+    
+        $request->session()->regenerate(); // Regenerar la sesión por seguridad
+        $user = Auth::user();
+        $role = $user->role; // Asegúrate de tener el campo 'role' en tu modelo de usuario
 
+        return response()->json(['message' => 'Inicio de sesión exitoso',         'role' => $role
+    ]);
 
-        if (!$user->email_verified_at) {
-            return response()->json(['message' => 'Debes verificar tu correo antes de iniciar sesión.'], 403);
-        }
-
-            return redirect()->route('dashboard'); // Redirige si el login es correcto
-        return response()->json([
-            'message' => 'Inicio de sesión exitoso',
-            'token' => $token,
-        ]);
     }
-
+// Obtener usuario autenticado
+public function me()
+{
+    return response()->json(Auth::user());
+}
     // Cerrar sesión
     public function logout()
     {
-        JWTAuth::invalidate(JWTAuth::getToken());
-        return response()->json(['message' => 'Sesión cerrada exitosamente']);
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
+            return response()->json(['message' => 'Sesión cerrada exitosamente']);
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'No se pudo cerrar la sesión'], 500);
+        }
     }
 }
+
+
+
+
