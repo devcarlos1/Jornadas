@@ -55,7 +55,7 @@ class RegistrationController extends Controller
         $event->increment('total_attendees');
         $event->increment('total_revenue', 0);
 
-        return redirect()->route('users.dashboard')->with('success', 'Pago realizado con éxito y registro completado.');
+        return redirect()->route('users.eventUser')->with('success', 'Pago realizado con éxito y registro completado.');
     }
     public function store(Request $request)
     {
