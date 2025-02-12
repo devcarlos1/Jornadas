@@ -16,6 +16,14 @@ class EventController extends Controller
     {
         return view('admin.events');
     }
+    public function showEventList()
+    {
+        return view('users.eventList');
+    }
+    public function showEventUser()
+    {
+        return view('users.eventUser');
+    }
 
     // Registrar un nuevo evento con validación de horario
     public function store(Request $request)
@@ -42,6 +50,30 @@ class EventController extends Controller
             return response()->json(['message' => 'The speaker is not available at this time.'], 400);
         }
 
+        if ($request->type == 'conferencia') {
+            $conflict = Event::where('type', 'conferencia')
+                ->where(function($query) use ($request) {
+                    $query->whereBetween('start_time', [$request->start_time, $request->end_time])
+                          ->orWhereBetween('end_time', [$request->start_time, $request->end_time]);
+                })->exists();
+    
+            if ($conflict) {
+                return response()->json(['error' => 'Ya hay una conferencia programada en ese horario.'], 422);
+            }
+        }
+    
+        // Verificar superposición de talleres en el aula específica
+        if ($request->type == 'taller') {
+            $conflict = Event::where('type', 'taller')
+                ->where(function($query) use ($request) {
+                    $query->whereBetween('start_time', [$request->start_time, $request->end_time])
+                          ->orWhereBetween('end_time', [$request->start_time, $request->end_time]);
+                })->exists();
+    
+            if ($conflict) {
+                return response()->json(['error' => 'Ya hay un taller programado en ese horario.'], 422);
+            }
+        }
         // Crear evento
         $event = Event::create($request->all());
 

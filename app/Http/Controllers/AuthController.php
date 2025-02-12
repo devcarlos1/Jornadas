@@ -10,8 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerificationTokenMail;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
+
 
 
 class AuthController extends Controller
@@ -52,13 +51,9 @@ class AuthController extends Controller
         // Enviar email con el token de verificación
         Mail::to($user->email)->send(new VerificationTokenMail($verificationToken));
 
-        // Generar token JWT para autenticación inmediata
-        $jwtToken = JWTAuth::fromUser($user);
-
         return response()->json([
             'message' => 'Registro exitoso. Se ha enviado un correo con tu token de verificación.',
             'verification_token' => $verificationToken,
-            'jwt_token' => $jwtToken
         ], 201);
     }
     // Verificación del token recibido por correo
@@ -113,15 +108,18 @@ public function me()
     return response()->json(Auth::user());
 }
     // Cerrar sesión
-    public function logout()
+    public function logout(Request $request)
     {
-        try {
-            JWTAuth::invalidate(JWTAuth::getToken());
-            return response()->json(['message' => 'Sesión cerrada exitosamente']);
-        } catch (JWTException $e) {
-            return response()->json(['error' => 'No se pudo cerrar la sesión'], 500);
-        }
+          // Verifica que haya un usuario autenticado antes de eliminar el token
+  // Elimina la sesión para asegurar el cierre de sesión
+  $request->session()->invalidate();
+  $request->session()->regenerateToken();
+  
+  return redirect('/login');
+
     }
+    
+    
 }
 
 

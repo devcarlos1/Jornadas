@@ -5,18 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
 
-    <h2>Events List</h2>
-    <ul id="eventsList"></ul>
-    <h2>Events List Registration</h2>
-    <ul id="eventsListRegistration"></ul>
+<nav class="bg-gray-800 p-4">
+    <ul class="flex space-x-4">
+        <li>
+            <a href="/users/eventList" class="text-white hover:text-gray-400">Event List</a>
+        </li>
+        <li>
+            <a href="/users/eventUser" class="text-white hover:text-gray-400">My Events</a>
+        </li>
+        <li>
+            <form action="{{ 'logout' }}" method="POST" class="inline">
+                @csrf
+                <button type="submit" class="text-white hover:text-gray-400">Logout</button>
+            </form>
+        </li>
+    </ul>
+</nav>
+
+    <h2 class="text-4xl font-bold text-center my-8 text-blue-600">Events List Registration</h2>
+    <ul id="eventsListRegistration" class="pl-5 text-gray-600 space-y-4 w-[50%] my-0 mx-auto"></ul>
 
     <script>
         let currentPage = 1; // Para manejar la paginación
         document.addEventListener('DOMContentLoaded', function () {
-            loadEvents(); // Cargar lista de eventos
             GetEventsRegistration();
         });
 
@@ -99,48 +114,6 @@ function DeletePay(events){
         }
     });
 }
-        function loadEvents() {
-            axios.get(`/api/events/eventsList`)
-                .then(response => {
-                    let events = response.data.data;
-                    let list = document.getElementById('eventsList');
-                    events.forEach(event => {
-                        if(event.total_attendees === event.max_attendees){
-                            let li = document.createElement('li');
-                        li.innerHTML = `${event.title} - ${event.start_time} 
-                            (Speaker: ${event.speaker.name}) - <span title= "${event.amount}">${event.amount}</span> - No Disponible`;    
-                            list.appendChild(li);
-  
-                        }else{
-                            let li = document.createElement('li');
-                        const type = `<select name="type" id="type" onchange="changeType(this)">
-    <option value="Presencial" id="presencial">Presencial</option>
-    <option value="Virtual" id="virtual">Virtual</option>
-    <option value="Gratuito" id="gratuito">Gratuito</option>
-</select>`;
-                        li.innerHTML = `${event.title} - ${event.start_time} 
-                            (Speaker: ${event.speaker.name}) - <span title= "${event.amount}">${event.amount}</span> - ${type} - Disponible 
-                            <form action="{{ route('paypal.pay') }}" method="POST"  onsubmit="setAmount(${event.amount})">
-    @csrf
-        <input type="hidden" name="eventid" value=${event.id}> 
-        <input type="hidden" name="type" id='typeValue'  > 
-    <input type="hidden" name="amount" id="amount" value=${event.amount} > 
-    <button type="submit">Pagar</button>
-</form>  <form action="http://127.0.0.1:8000/api/free/registration" method="POST" style="display:none">
-    @csrf
-        <input type="hidden" name="eventid" value=${event.id}> 
-       <button type="submit">Inscribete</button>
-</form>
-`;      
-list.appendChild(li);
-
-                        }                 
-                    });
-                    currentPage++; // Incrementar la página para la siguiente carga
-                })
-                .catch(error => console.error(error));
-        }
-
 
         function GetEventsRegistration() {
             axios.get(`/api/user/registration`)
@@ -149,9 +122,19 @@ list.appendChild(li);
                     let list = document.getElementById('eventsListRegistration');
                     events.forEach(event => {
                         let li = document.createElement('li');
-                        li.innerHTML = `${event.title} - ${event.start_time} 
-                            (Speaker: ${event.speaker.name}) - <span title= "${event.amount}">${event.amount}</span> 
-`;                       
+                        li.innerHTML = `
+    <div class="p-4 mb-4 bg-white rounded-lg shadow-md border border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-800">${event.title}</h3>
+        <p class="text-sm text-gray-600">${event.start_time}</p>
+        <p class="text-sm text-gray-600">
+            Speaker: <span class="font-medium">${event.speaker.name}</span>
+        </p>
+        <p class="text-sm text-gray-600">
+            <span title="${event.amount}" class="font-semibold">${event.amount}</span>
+        </p>
+    </div>
+`;
+               
                         list.appendChild(li);
                     });
                     DeletePay(events);

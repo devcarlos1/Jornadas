@@ -40,7 +40,7 @@
                     password: document.getElementById("password").value
                 }, { withCredentials: true }) // Usa cookies para autenticación
                 .then(response => {
-                   response.data.role === 'admin'? window.location.href = "admin/speakers" :window.location.href = "users/dashboard";
+                   response.data.role === 'admin'? window.location.href = "admin/speakers" :window.location.href = "users/eventList";
                 })
                 .catch(error => {
                     console.log(error)

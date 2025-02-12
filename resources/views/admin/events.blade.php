@@ -5,28 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Events Management</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-    <h1>Events Management</h1>
+<nav class="bg-gray-800 p-4">
+    <ul class="flex space-x-4">
+        <li>
+            <a href="{{ url('/admin/speakers') }}" class="text-white hover:text-gray-400">Speakers</a>
+        </li>
+        <li>
+            <a href="{{ url('/admin/event') }}" class="text-white hover:text-gray-400">Events</a>
+        </li>
+    </ul>
+</nav>
+<h1 class="text-4xl font-bold text-center my-8 text-blue-600">Events Management</h1>
 
+<div class="w-[50%] my-0 mx-auto">
     <!-- Formulario para agregar un nuevo evento -->
-    <h2>Add New Event</h2>
-    <form id="eventForm">
-        <input type="text" id="title" placeholder="Title" required>
-        <select id="type">
+<h2 class="text-2xl font-semibold text-gray-700 mb-4">Add New Event</h2>
+<form id="eventForm" class="bg-white shadow-md rounded-lg p-6 mb-8">
+    <div class="mb-4">
+        <input 
+            type="text" 
+            id="title" 
+            placeholder="Title" 
+            required 
+            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+    </div>
+    <div class="mb-4">
+        <select 
+            id="type" 
+            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
             <option value="taller">Taller</option>
             <option value="conferencia">Conferencia</option>
         </select>
-        <select id="speakersList" required></select>
-        <input type="number" id="max">
-        <input type="number" id="amount">
-        <input type="datetime-local" id="start_time" required>
-        <input type="datetime-local" id="end_time" required readonly>
-        <button type="submit">Add Event</button>
-    </form>
+    </div>
+    <div class="mb-4">
+        <select 
+            id="speakersList" 
+            required 
+            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        ></select>
+    </div>
+    <div class="mb-4">
+        <input 
+            type="number" 
+            id="max" 
+            placeholder="Max Attendees" 
+            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+    </div>
+    <div class="mb-4">
+        <input 
+            type="number" 
+            id="amount" 
+            placeholder="Amount" 
+            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+    </div>
+    <div class="mb-4">
+        <input 
+            type="datetime-local" 
+            id="start_time" 
+            required 
+            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+    </div>
+    <div class="mb-4">
+        <input 
+            type="datetime-local" 
+            id="end_time" 
+            required 
+            readonly 
+            class="w-full px-3 py-2 border rounded-lg bg-gray-100"
+        >
+    </div>
+    <button 
+        type="submit" 
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+    >
+        Add Event
+    </button>
+</form>
+</div>
 
-    <h2>Events List</h2>
-    <ul id="eventsList"></ul>
+<h2 class="text-2xl font-semibold mt-8 mb-4 text-gray-700">Events List</h2>
+<ul id="eventsList" class="pl-5 text-gray-600 space-y-4"></ul>
+
 
     <script>
         let currentPage = 1; // Para manejar la paginación
@@ -81,9 +148,25 @@
                     let list = document.getElementById('eventsList');
                     events.forEach(event => {
                         let li = document.createElement('li');
-                        li.innerHTML = `${event.title} - ${event.start_time} 
-                            (Speaker: ${event.speaker.name}) - (Amount: ${event.amount}) - (Total attendees: ${event.total_attendees}) - (Total Revenue: ${event.total_revenue})
-                            <button onclick="deleteEvent(${event.id})">Delete</button>`;
+                        li.innerHTML = `
+    <div class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
+        <div>
+            <h3 class="text-xl font-semibold text-gray-800">${event.title}</h3>
+            <p class="text-gray-600">Start Time: ${event.start_time}</p>
+            <p class="text-gray-600">Speaker: ${event.speaker.name}</p>
+            <p class="text-gray-600">Amount: $${event.amount}</p>
+            <p class="text-gray-600">Total Attendees: ${event.total_attendees}</p>
+            <p class="text-gray-600">Total Revenue: $${event.total_revenue}</p>
+        </div>
+        <button 
+            onclick="deleteEvent(${event.id})" 
+            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+        >
+            Delete
+        </button>
+    </div>
+`;
+
                         list.appendChild(li);
                     });
                     currentPage++; // Incrementar la página para la siguiente carga

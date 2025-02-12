@@ -33,12 +33,17 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['admin'])->group(function () {
 Route::get('/admin/speakers', [SpeakerController::class, 'viewSpeaker'])->name('admin.speakers');
 Route::get('/admin/event', [EventController::class, 'viewEvent'])->name('admin.event');
+Route::post('/admin/logout', [AuthController::class, 'logout'])->name('logout');
+
 });
 Route::middleware(['user'])->group(function () {
-Route::get('/users/dashboard', [RegistrationController::class, 'show'])->name('users.dashboard');
+Route::get('/users/eventList', [EventController::class, 'showEventList'])->name('users.eventList');
+Route::get('/users/eventUser', [EventController::class, 'showEventUser'])->name('users.eventUser');
 Route::post('/paypal/pay', [PayPalController::class, 'createPayment'])->name('paypal.pay');
 Route::get('/paypal/success', [PayPalController::class, 'successPayment'])->name('paypal.success');
 Route::get('/paypal/cancel', [PayPalController::class, 'cancelPayment'])->name('paypal.cancel');
+Route::post('/users/logout', [AuthController::class, 'logout'])->name('logout');
+
 });
 
 });
