@@ -88,9 +88,18 @@
             class="w-full px-3 py-2 border rounded-lg bg-gray-100"
         >
     </div>
+    <div class="flex items-center space-x-4">
+        <img id="preview" class="w-16 h-16 rounded-full object-cover border border-gray-300 shadow-md" src="https://via.placeholder.com/100" alt="Vista previa">
+        <label class="cursor-pointer">
+            <span class="bg-gradient-to-r from-teal-400 to-blue-500 text-white px-6 py-2 rounded-full shadow-md hover:from-teal-500 hover:to-blue-600 transition duration-300 inline-block">
+                <i class="fas fa-upload mr-2"></i>Seleccionar Imagen
+            </span>
+            <input type="file" name="photo" id="photo" accept="image/png, image/jpeg, image/jpg"  class="hidden" onchange="previewImage(event)" required>
+        </label>
+    </div>
     <button 
         type="submit" 
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline mt-4"
     >
         Add Event
     </button>
@@ -155,22 +164,163 @@
                     events.forEach(event => {
                         let li = document.createElement('li');
                         li.innerHTML = `
-    <div class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
-        <div>
-            <h3 class="text-xl font-semibold text-gray-800">${event.title}</h3>
-            <p class="text-gray-600">Start Time: ${event.start_time}</p>
-            <p class="text-gray-600">Speaker: ${event.speaker.name}</p>
-            <p class="text-gray-600">Amount: $${event.amount}</p>
-            <p class="text-gray-600">Total Attendees: ${event.total_attendees}</p>
-            <p class="text-gray-600">Total Revenue: $${event.total_revenue}</p>
-            <p class="text-gray-600">Max Attendees: ${event.max_attendees}</p>
+    <div class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center flex-col">
+        <div class="grid grid-cols-4 gap-6  justify-center items-end">
+<label class="block text-gray-700 font-semibold">
+Photo
+<div class=" space-x-4 w-fit flex items-center">
+    <!-- Vista previa de la imagen seleccionada -->
+    <img id="preview" class="w-16 h-16 rounded-full object-cover border border-gray-300 shadow-md" src="${event.photo}" alt="Vista previa">
+    
+    <!-- Botón personalizado para seleccionar imagen -->
+    <label class="cursor-pointer hidden">
+        <span class="bg-gradient-to-r from-teal-400 to-blue-500 text-white px-6 py-2 rounded-full shadow-md hover:from-teal-500 hover:to-blue-600 transition duration-300 inline-block">
+            <i class="fas fa-upload mr-2"></i>Seleccionar Imagen
+        </span>
+        <!-- Input oculto para el archivo de imagen -->
+        <input type="file" name="photo" id="photoUpdate" accept="image/png, image/jpeg, image/jpg" class="hidden" onchange="previewImage(event)" files="${event.photo}" required>
+    </label>
+</div>
+</label>
+
+<label class="block text-gray-700 font-semibold">
+Event Title    
+<input 
+        type="text" 
+        value="${event.title}" 
+        class="block w-full mt-2 px-4 py-2 w-fit border rounded-lg text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" 
+        placeholder="event title"
+        disabled
+        id="titleUpdate"
+    />
+</label>
+
+<label class="block text-gray-700 font-semibold mt-4">
+    Type of Event
+    <select 
+        class="block w-full mt-2 px-4 py-2 w-fit border rounded-lg text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" 
+        name="type"     
+        disabled
+        id="typeUpdate"
+    >
+        <option value="Taller" ${event.type === 'taller' ? 'selected' : ''}>Taller</option>
+        <option value="Conferencia" ${event.type === 'conferencia' ? 'selected' : ''}>Conferencia</option>
+    </select>
+</label>
+
+<label class="block text-gray-700 font-semibold mt-4">
+Start Time 
+   <input 
+        type="datetime-local" 
+        value="${event.start_time}" 
+        class="block w-full mt-2 px-4 py-2 w-fit border rounded-lg text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" 
+        placeholder="Start Time"
+        disabled
+        id="start_timeUpdate"
+    />
+</label>
+
+<label class="block text-gray-700 font-semibold mt-4">
+End Time 
+   <input 
+        type="datetime-local" 
+        value="${event.end_time}" 
+        class="block w-full mt-2 px-4 py-2 w-fit border rounded-lg text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" 
+        placeholder="End Time"
+        disabled
+        id="end_timeUpdate"
+    />
+</label>
+
+<label class="block text-gray-700 font-semibold mt-4" id="LabelSpeaker_NameUpdate">
+    Speaker Name
+    <input 
+        type="text" 
+        value="${event.speaker.name}" 
+        class="block w-full mt-2 px-4 py-2 w-fit border rounded-lg text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" 
+        placeholder="Speaker Name"
+        disabled
+        id="Speaker_NameUpdate"
+    />
+</label>
+<select id="speakersListUpdate"   class="hidden w-full h-fit px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+
+<label class="block text-gray-700 font-semibold mt-4">
+    Amount
+    <input 
+        type="number" 
+        value="${event.amount}" 
+        class="block w-full mt-2 px-4 py-2 w-fit border rounded-lg text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" 
+        placeholder="Amount"
+        disabled
+        id="amountUpdate"
+    />
+</label>
+
+<label class="block text-gray-700 font-semibold mt-4">
+    Total Attendees
+    <input 
+        type="number" 
+        value="${event.total_attendees}" 
+        class="block w-full mt-2 px-4 py-2 border w-fit rounded-lg text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" 
+        placeholder=" Total Attendees"
+        disabled
+    />
+</label>
+
+<label class="block text-gray-700 font-semibold mt-4">
+    Total Revenue
+    <input 
+        type="number" 
+        value="${event.total_revenue}" 
+        class="block w-full mt-2 px-4 py-2 border w-fit rounded-lg text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" 
+        placeholder="Total Revenue"
+        disabled
+        id=""
+    />
+</label>
+
+<label class="block text-gray-700 font-semibold mt-4">
+    Max Attendees
+    <input 
+        type="number" 
+        value="${event.max_attendees}" 
+        class="block w-full mt-2 px-4 py-2 border w-fit rounded-lg text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" 
+        placeholder="Max Attendees"
+        disabled
+        id="maxUpdate"
+    />
+</label>
+
         </div>
+        <div id="btnsUpdate" class="mt-4 hidden">
+        <button 
+        onclick="updateEvent(event, ${event.id})" 
+        class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+        Confirmar
+    </button>
+
+    <!-- Botón para cancelar cambios -->
+    <button 
+        onclick="cancelUpdate(event)" 
+        class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+        Cancelar
+    </button>
+        </div>
+<div class="mt-4">
+        <button 
+    onclick="activeUpdate(event)" 
+    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition duration-300"
+    id="activeUp">
+    Actualizar Eventos
+         </button>
         <button 
             onclick="deleteEvent(${event.id})" 
             class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
         >
             Delete
         </button>
+</div>
     </div>
 `;
 
@@ -180,11 +330,28 @@
                 })
                 .catch(error => console.error(error));
         }
-        function loadSpeakers() {
-            axios.get('/api/speakers/spakersList')
+
+         function loadSpeakers() {
+            axios.get(`/api/speakers/spakersList`)
                 .then(response => {
                     let speakers = response.data.data;
                     let list = document.getElementById('speakersList');
+                    list.innerHTML = '';
+                    speakers.forEach(speaker => {
+                        let op = document.createElement('option');
+                        op.id= speaker.id;
+                        op.innerHTML = speaker.name;
+                        list.appendChild(op);
+                    });
+                })
+                .catch(error => console.error(error));
+        }
+        function loadSpeakersUpdate(e) {
+            axios.get(`/api/speakers/spakersList`)
+                .then(response => {
+                    let speakers = response.data.data;
+                    let list = e.querySelector('#speakersListUpdate');
+                    console.log(list);
                     list.innerHTML = '';
                     speakers.forEach(speaker => {
                         let op = document.createElement('option');
@@ -203,9 +370,19 @@
             let speaker_id = document.getElementById('speakersList').options[document.getElementById("speakersList").selectedIndex].id;
             let amount = document.getElementById('amount').value;
             let max_attendees = document.getElementById('max').value;
-            axios.post('/api/events/store', {
-                title, type, speaker_id, start_time, end_time,amount, max_attendees
-            })
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('type', type);
+            formData.append('start_time', start_time);
+            formData.append('end_time', end_time);
+            formData.append('speaker_id', speaker_id);
+            formData.append('amount', amount);
+            formData.append('max_attendees', max_attendees);
+            const fileInput = document.getElementById('photo');
+            if (fileInput.files.length > 0) {
+             formData.append('photo', fileInput.files[0]);
+             } 
+            axios.post('/api/events/store', formData)
             .then(() => {
                 alert('Event added successfully');
                 document.getElementById('eventForm').reset();
@@ -216,7 +393,6 @@
             .catch(error => console.error(error));
         }
         function deleteEvent(id) {
-            console.log(id)
             axios.post(`/api/events/destroy/${id}`)
                 .then(() => {
                     alert('Event deleted successfully');
@@ -227,14 +403,113 @@
                 .catch(error => console.error(error));
         }
 
+        function updateEvent(e,id) {
+           let title =  e.target.parentNode.parentNode.querySelector('#titleUpdate').value;
+            let type =  e.target.parentNode.parentNode.querySelector('#typeUpdate').value;
+            let start_time = getFormattedDate( e.target.parentNode.parentNode.querySelector('#start_timeUpdate').value);
+            let end_time = getFormattedDate( e.target.parentNode.parentNode.querySelector('#end_timeUpdate').value);
+            let speaker_id =  e.target.parentNode.parentNode.querySelector('#speakersListUpdate').options[ e.target.parentNode.parentNode.querySelector("#speakersListUpdate").selectedIndex].id;
+            let amount =  e.target.parentNode.parentNode.querySelector('#amountUpdate').value;
+            let max_attendees =  e.target.parentNode.parentNode.querySelector('#maxUpdate').value;
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('type', type);
+            formData.append('start_time', start_time);
+            formData.append('end_time', end_time);
+            formData.append('speaker_id', speaker_id);
+            formData.append('amount', amount);
+            formData.append('max_attendees', max_attendees);
+            formData.append('_method', 'PUT');
+            const fileInput = e.target.parentNode.parentNode.querySelector('#photoUpdate');
+            if (fileInput.files.length > 0) {
+                console.log(fileInput.files[0]);
+             formData.append('photo', fileInput.files[0]);
+             }else{
+                console.log(base64ToFile(e.target.parentNode.parentNode.querySelector('#preview').src));
+               formData.append('photo',base64ToFile(e.target.parentNode.parentNode.querySelector('#preview').src));
+             }
+            axios.post(`/api/events/update/${id}`,formData)
+                .then(() => {
+                    alert('Event update successfully');
+                })
+                .catch(error => console.error(error));
+        }
+
+        function activeUpdate(event){
+            const inputs = [
+        'photoUpdate',
+        'titleUpdate',
+        'typeUpdate',
+        'start_timeUpdate',
+        'amountUpdate',
+        'maxUpdate'
+    ];
+    
+    inputs.forEach(id => {
+        const element = event.target.parentNode.parentNode.querySelector(`#${id}`);
+        if (element) {
+            element.removeAttribute('disabled');
+        }
+    });
+
+    // Mostrar el label del selector de imagen
+    const imageLabel = event.target.parentNode.parentNode.querySelector('#photoUpdate').closest('label');
+    if (imageLabel) {
+        imageLabel.classList.remove('hidden');
+    }
+     event.target.parentNode.parentNode.querySelector('#LabelSpeaker_NameUpdate').style.display="none";
+     event.target.parentNode.parentNode.querySelector(`#activeUp`).style.display="none";
+     event.target.parentNode.parentNode.querySelector(`#btnsUpdate`).style.display="block";
+     event.target.parentNode.parentNode.querySelector(`#speakersListUpdate`).style.display="block";
+
+     loadSpeakersUpdate(event.target.parentNode.parentNode);
+            }
+        function cancelUpdate(event) {
+    const row = event.target.parentNode.parentNode;
+
+    // Deshabilitar todos los inputs y selects en esa fila
+    const formElements = row.querySelectorAll('input, select');
+    formElements.forEach(element => {
+        element.setAttribute('disabled', true);
+    });
+
+    // Ocultar labels para inputs de tipo file
+    const fileLabels = row.querySelectorAll('input[type="file"]');
+    fileLabels.forEach(fileInput => {
+        const imageLabel = fileInput.closest('label');
+        if (imageLabel) {
+            imageLabel.classList.add('hidden');
+        }
+    });
+}
+
+
+function base64ToFile(base64, filename) {
+    // Separar el encabezado de los datos base64
+    const arr = base64.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    
+    // Convertir base64 a binario
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+
+    // Crear un archivo Blob y luego un File
+    return new File([u8arr], filename, { type: mime });
+}
         const startTime = document.getElementById('start_time');
         const endTime = document.getElementById('end_time');
 
 // Función para verificar si la fecha es jueves o viernes
 function isThursdayOrFriday(date) {
-    const day = date.getDay();
-    // 4 = Jueves, 5 = Viernes
-    return day === 4 || day === 5;
+        const d = new Date(date);
+        const day = d.getUTCDate();
+        const weekDay = d.getUTCDay();
+        // Verifica que sea el 27 (jueves) o el 28 (viernes)
+        return (day === 27 && weekDay === 4) || (day === 28 && weekDay === 5);
 }
 
 // Evento al seleccionar una fecha
@@ -243,7 +518,7 @@ startTime.addEventListener('change', (event) => {
 
     // Si no es jueves o viernes, se limpia el campo
     if (!isThursdayOrFriday(selectedDate)) {
-        alert('Solo se permiten fechas en jueves y viernes.');
+        alert('Solo se permiten fechas en jueves (27) y viernes (28).');
         startTime.value = '';
         endTime.value = '';
     }
@@ -262,6 +537,14 @@ startTime.addEventListener('click', () => {
     // Define el atributo min para limitar el inicio
     startTime.min = nextAvailableDate.toISOString().split('T')[0];
 });
+function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function(){
+            const output =event.target.parentNode.parentNode.querySelector('#preview');
+            output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+}
     </script>
 </body>
 </html>

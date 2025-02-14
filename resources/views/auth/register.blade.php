@@ -39,6 +39,10 @@
                 <label class="block text-gray-700">Confirmar Contraseña</label>
                 <input type="password" name="password_confirmation" class="w-full p-2 border rounded" required>
             </div>
+            <div class="mb-4 ">
+                <label class=" text-gray-700 mr-2">Marca si eres estudiante: </label>
+                <input type="checkbox" name="student" value="1" class="form-checkbox text-blue-600 mt-auto" required>
+                </div>
 
             <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Registrarse</button>
         </form>

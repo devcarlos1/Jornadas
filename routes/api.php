@@ -42,9 +42,11 @@ Route::get('/user/registration', [RegistrationController::class, 'getUserEvents'
 Route::post('/speakers/store', [SpeakerController::class, 'store']);
 Route::post('/speakers/destroy/{id}', [SpeakerController::class, 'destroy']);
 Route::get('/speakers/spakersList', [SpeakerController::class, 'spakersList']);
+Route::put('/speakers/update/{id}', [SpeakerController::class, 'update']);
 
 Route::post('/events/store', [EventController::class, 'store']);
 Route::post('/events/destroy/{id}', [EventController::class, 'destroy']);
 Route::get('/events/eventsList', [EventController::class, 'eventList']);
+Route::put('/events/update/{id}', [EventController::class, 'update']);
 
 

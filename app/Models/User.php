@@ -21,7 +21,7 @@ class User extends Authenticatable
     {
         return [];
     }
-    protected $fillable = ['name', 'email', 'password', 'verification_token'];
+    protected $fillable = ['name', 'email', 'password', 'verification_token','student'];
 
     protected $hidden = ['password', 'remember_token'];
     public $timestamps = false;

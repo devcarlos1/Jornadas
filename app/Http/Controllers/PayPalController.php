@@ -75,18 +75,20 @@ class PayPalController extends Controller
             $user = Auth::user();
             $ticketNumber = 'TICKET-' . strtoupper(Str::random(10));
             $event = Event::find($request->eventid);
-            $event->increment('total_attendees');
+            if($request->type === "Presencial"){
+                $event->increment('total_attendees');
+            }
             $event->increment('total_revenue', $response['purchase_units'][0]['payments']['captures'][0]['amount']['value']);
             Mail::to($user->email)->send(new PaymentReceipt($event, $user, $ticketNumber));
 
             return redirect()->route('users.eventUser')->with('success', 'Pago realizado con éxito y registro completado.');
         }
 
-        return redirect()->route('users.dashboard')->with('error', 'Error al procesar el pago.');
+        return redirect()->route('users.eventList')->with('error', 'Error al procesar el pago.');
     }
 
     public function cancelPayment()
     {
-        return redirect()->route('users.dashboard')->with('error', 'Pago cancelado.');
+        return redirect()->route('users.eventList')->with('error', 'Pago cancelado.');
     }
 }

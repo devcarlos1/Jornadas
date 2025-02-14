@@ -24,18 +24,21 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         // Validar los datos del formulario
-
         $request->merge([
             'name' => trim($request->name),
             'email' => trim($request->email),
             'password' => trim($request->password),
+            'student' => trim($request->student)
         ]);
         
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string'
+            'password' => 'required|string',
+            'student' => 'nullable|boolean'
         ]);
+
+        $data['student'] = $request->has('student');
 
         // Generar token de verificación
         $verificationToken = Str::random(20);
@@ -46,6 +49,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'verification_token' => $verificationToken,
+            'student' => $request->student
         ]);
 
         // Verificar que el usuario se haya guardado

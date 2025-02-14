@@ -13,6 +13,7 @@ class Speaker extends Model
         'name',
         'expertise',
         'social_links',
+        'photo'
     ];
 }
 

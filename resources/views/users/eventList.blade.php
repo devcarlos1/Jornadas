@@ -25,8 +25,10 @@
     </ul>
 </nav>
 
-    <h2 class="text-4xl font-bold text-center my-8 text-blue-600">Events List</h2>
-    <ul id="eventsList" class="pl-5 text-gray-600 space-y-4 w-[50%] my-0 mx-auto"></ul>
+    <h2 class="text-4xl font-bold text-center my-8 text-blue-600">Conference List</h2>
+    <ul id="eventsConference" class="pl-5 text-gray-600 space-y-4 w-[50%] my-0 mx-auto"></ul>
+    <h2 class="text-4xl font-bold text-center my-8 text-blue-600">Workshop List</h2>
+    <ul id="eventsWorkshop" class="pl-5 text-gray-600 space-y-4 w-[50%] my-0 mx-auto"></ul>
 
     <script>
         let currentPage = 1; // Para manejar la paginación
@@ -61,8 +63,8 @@ function changeType(selectElement) {
     
         case 'Virtual': 
             input.value = valorSeleccionado;
-            inputAmount.value= Number(amount) - 10;
-            selectElement.previousSibling.previousSibling.textContent = Number(amount) - 10;
+            inputAmount.value= Number(amount) /2;
+            selectElement.previousSibling.previousSibling.textContent = Number(amount)/2;
             formPay.style.display="block";
             formFree.style.display="none"
 
@@ -121,7 +123,9 @@ function loadEvents() {
             axios.get(`/api/events/eventsList`)
                 .then(response => {
                     let events = response.data.data;
-                    let list = document.getElementById('eventsList');
+                    let listCon = document.getElementById('eventsConference');
+                    let listWork = document.getElementById('eventsWorkshop');
+
                     events.forEach(event => {
                         if(event.total_attendees === event.max_attendees){
                             let li = document.createElement('li');
@@ -129,6 +133,7 @@ function loadEvents() {
     <div class="p-4 bg-white rounded-lg shadow-md flex flex-col gap-2">
         <h3 class="text-lg font-bold text-gray-800">${event.title}</h3>
         <p class="text-sm text-gray-600">Inicio: ${event.start_time}</p>
+        <p class="text-sm text-gray-600">Inicio: ${event.type}</p>
         <p class="text-sm text-gray-600">Ponente: <span class="font-semibold">${event.speaker.name}</span></p>
         <p class="text-sm text-gray-600">
             <span class="font-semibold" title="${event.amount}">Cupo: ${event.amount}</span> - 
@@ -140,14 +145,13 @@ function loadEvents() {
   
                         }else{
                             let li = document.createElement('li');
-                        const type =`
+                            const type =`
     <select name="type" id="type" onchange="changeType(this)" class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
         <option value="Presencial" id="presencial" class="text-gray-700">Presencial</option>
         <option value="Virtual" id="virtual" class="text-gray-700">Virtual</option>
         <option value="Gratuito" id="gratuito" class="text-gray-700">Gratuito</option>
     </select>
 `;
-
                         li.innerHTML =  `
     <div class="p-4 mb-4 bg-white rounded-lg shadow-md border border-gray-200">
         <h3 class="text-lg font-semibold text-gray-800">${event.title}</h3>
@@ -177,8 +181,13 @@ function loadEvents() {
         </form>
     </div>
 `;    
+
                         
-                        list.appendChild(li);
+                        if(event.type === "conferencia"){
+                            listCon.appendChild(li);
+         }else if(event.type === "taller"){
+            listWork.appendChild(li);
+         }
                         }                 
                     });
                     currentPage++; // Incrementar la página para la siguiente carga

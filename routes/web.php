@@ -19,7 +19,7 @@ use App\Http\Controllers\UserController;
 |
 */
 Route::get('/', function () {
-    return view('auth.register'); // Cambia según la ubicación del archivo
+    return view('welcome'); // Cambia según la ubicación del archivo
 });
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 

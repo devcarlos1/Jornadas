@@ -36,7 +36,10 @@ class EventController extends Controller
             'end_time' => 'required|date_format:Y-m-d H:i:s|after:start_time',
             'amount' => 'required',
             'max_attendees' => 'required|int',
+            'photo' => 'required|mimes:jpeg,jpg,png',
+
         ]);
+        $photo= $request->file('photo');
 
         // Verificar disponibilidad del horario
         $conflict = Event::where('speaker_id', $request->speaker_id)
@@ -75,7 +78,16 @@ class EventController extends Controller
             }
         }
         // Crear evento
-        $event = Event::create($request->all());
+        $event = Event::create([
+            'title' => $request->title,
+            'type' => $request->type,
+            'speaker_id' => $request->speaker_id,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+            'amount' => $request->amount,
+            'max_attendees' => $request->max_attendees,
+            'photo' => 'data:' . $photo->getMimeType() . ';base64,' . base64_encode(file_get_contents($photo->getRealPath()))
+        ]);
 
         return response()->json($event, 201);
     }
@@ -90,6 +102,37 @@ class EventController extends Controller
         return response()->json($event);
     }
 
+    
+    // Actualizar un evento
+    public function update(Request $request, $id)
+    {  
+        
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'type' => 'required|string',
+            'speaker_id' => 'required|exists:speakers,id',
+            'start_time' => 'required|date_format:Y-m-d H:i:s',
+            'end_time' => 'required|date_format:Y-m-d H:i:s|after:start_time',
+            'amount' => 'required',
+            'max_attendees' => 'required|int',
+            'photo' => 'required|mimes:jpeg,jpg,png',
+
+        ]);
+        $photo= $request->file('photo');
+        $event = Event::findOrFail($id);
+        // Crear evento
+             $event->title= $request->title;
+             $event->type = $request->type;
+             $event->speaker_id = $request->speaker_id;
+             $event->start_time = $request->start_time;
+             $event->end_time = $request->end_time;
+             $event->amount = $request->amount;
+             $event->max_attendees = $request->max_attendees;
+             $event->photo = 'data:' . $photo->getMimeType() . ';base64,' . base64_encode(file_get_contents($photo->getRealPath()));
+             $event->save();
+
+        return response()->json($event, 201);
+    }
     // Eliminar un evento
     public function destroy($id)
     {

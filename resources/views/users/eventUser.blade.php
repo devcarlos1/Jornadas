@@ -26,8 +26,10 @@
     </ul>
 </nav>
 
-    <h2 class="text-4xl font-bold text-center my-8 text-blue-600">Events List Registration</h2>
-    <ul id="eventsListRegistration" class="pl-5 text-gray-600 space-y-4 w-[50%] my-0 mx-auto"></ul>
+<h2 class="text-4xl font-bold text-center my-8 text-blue-600">Conference List</h2>
+    <ul id="eventsConference" class="pl-5 text-gray-600 space-y-4 w-[50%] my-0 mx-auto"></ul>
+    <h2 class="text-4xl font-bold text-center my-8 text-blue-600">Workshop List</h2>
+    <ul id="eventsWorkshop" class="pl-5 text-gray-600 space-y-4 w-[50%] my-0 mx-auto"></ul>
 
     <script>
         let currentPage = 1; // Para manejar la paginación
@@ -119,8 +121,9 @@ function DeletePay(events){
             axios.get(`/api/user/registration`)
                 .then(response => {
                     let events = response.data.events.data;
-                    let list = document.getElementById('eventsListRegistration');
-                    events.forEach(event => {
+                    let listCon = document.getElementById('eventsConference');
+                    let listWork = document.getElementById('eventsWorkshop');
+                         events.forEach(event => {
                         let li = document.createElement('li');
                         li.innerHTML = `
     <div class="p-4 mb-4 bg-white rounded-lg shadow-md border border-gray-200">
@@ -135,7 +138,11 @@ function DeletePay(events){
     </div>
 `;
                
-                        list.appendChild(li);
+if(event.type === "conferencia"){
+                            listCon.appendChild(li);
+         }else if(event.type === "taller"){
+            listWork.appendChild(li);
+         }
                     });
                     DeletePay(events);
                     currentPage++; // Incrementar la página para la siguiente carga
